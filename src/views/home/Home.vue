@@ -4,7 +4,11 @@
       <homeSwiper :banners="banners"></homeSwiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control"></tab-control>
+      <tab-control 
+        :titles="['流行','新款','精选']" 
+        class="tab-control"
+        @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
       <ul>
         <li>序号1</li>
         <li>序号2</li>
@@ -56,56 +60,7 @@
         <li>序号48</li>
         <li>序号49</li>
         <li>序号50</li>
-        <li>序号51</li>
-        <li>序号52</li>
-        <li>序号53</li>
-        <li>序号54</li>
-        <li>序号55</li>
-        <li>序号56</li>
-        <li>序号57</li>
-        <li>序号58</li>
-        <li>序号59</li>
-        <li>序号60</li>
-        <li>序号61</li>
-        <li>序号62</li>
-        <li>序号63</li>
-        <li>序号64</li>
-        <li>序号65</li>
-        <li>序号66</li>
-        <li>序号67</li>
-        <li>序号68</li>
-        <li>序号69</li>
-        <li>序号70</li>
-        <li>序号71</li>
-        <li>序号72</li>
-        <li>序号73</li>
-        <li>序号74</li>
-        <li>序号75</li>
-        <li>序号76</li>
-        <li>序号77</li>
-        <li>序号78</li>
-        <li>序号79</li>
-        <li>序号80</li>
-        <li>序号81</li>
-        <li>序号82</li>
-        <li>序号83</li>
-        <li>序号84</li>
-        <li>序号85</li>
-        <li>序号86</li>
-        <li>序号87</li>
-        <li>序号88</li>
-        <li>序号89</li>
-        <li>序号90</li>
-        <li>序号91</li>
-        <li>序号92</li>
-        <li>序号93</li>
-        <li>序号94</li>
-        <li>序号95</li>
-        <li>序号96</li>
-        <li>序号97</li>
-        <li>序号98</li>
-        <li>序号99</li>
-        <li>序号100</li>
+
       </ul>
    </div>
 </template>
@@ -115,6 +70,7 @@
 import HomeSwiper from "./childcomps/HomeSwiper"
 import RecommendView from "./childcomps/RecommendView"
 import FeatureView from "./childcomps/FeatureView"
+import GoodsList from "components/content/goods/GoodsList"
 
 //公共组件
 import NavBar from "components/common/navbar/NavBar"
@@ -122,8 +78,11 @@ import TabControl from "components/content/tabcontrol/TabControl"
 
 
 
-
-import {getHomeMultidata} from "network/home"
+// 导入方法
+import {
+  getHomeMultidata,
+  getHomeGoods
+} from "network/home"
 
 
 
@@ -133,8 +92,10 @@ import {getHomeMultidata} from "network/home"
       HomeSwiper,
       RecommendView,
       FeatureView,
+      GoodsList,
       NavBar,
       TabControl
+    
     },
     data(){
   
@@ -145,18 +106,70 @@ import {getHomeMultidata} from "network/home"
           'pop':{page:0, list:[]},
           'news':{page:0, list:[]},
           'sell':{page:0, list:[]},
-        }
+        },
+        currentType:'pop'
       }
     },
     created(){
-      getHomeMultidata().then((res) => {
+      //请求多个数据
+      this.getHomeMultidata()
         // console.log(res);
         
-        this.banners = res.data.banner.list;
-        this.recommends = res.data.recommend.list;
+        // this.banners = res.data.banner.list;
+        // this.recommends = res.data.recommend.list;
         
-      })
+      //请求商品数据
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+
+    },
+    computed:{
+      showGoods(){
+        return this.goods[this.currentType].list
+
+      }
+    },
+    methods:{
+
+     /* 事件监听相关的 */
+      tabClick(index){
+        switch (index){
+          case 0:
+            this.currentType = 'pop'
+            break
+          case 1:
+            this.currentType = 'news'
+            break
+          case 2:
+            this.currentType = 'sell'
+            break
+        }
+        
+
+      },
+
+      /* 网络请求相关的方法 */
+      getHomeMultidata(){
+        getHomeMultidata().then((res) => {
+          this.banners = res.data.banner.list;
+          this.recommends = res.data.recommend.list;
+      
+        })
+      },
+      getHomeGoods(type ){
+        getHomeGoods(type,1).then(res => {
+          this.goods[type].list.push(...res.data.list)
+          this.goods[type] += 1
+
+        })
+      },
+
+
+
     }
+
+
   }
 </script>
 
@@ -176,6 +189,7 @@ import {getHomeMultidata} from "network/home"
   .tab-control{
     position: sticky;
     top: 44px;
+    z-index: 9;
 
   }
 
