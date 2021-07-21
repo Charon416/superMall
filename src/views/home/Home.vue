@@ -98,13 +98,12 @@ import {
     
     },
     data(){
-  
       return {
         banners:[],
         recommends:[],
         goods:{
           'pop':{page:0, list:[]},
-          'news':{page:0, list:[]},
+          'new':{page:0, list:[]},
           'sell':{page:0, list:[]},
         },
         currentType:'pop'
@@ -113,11 +112,7 @@ import {
     created(){
       //请求多个数据
       this.getHomeMultidata()
-        // console.log(res);
-        
-        // this.banners = res.data.banner.list;
-        // this.recommends = res.data.recommend.list;
-        
+
       //请求商品数据
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
@@ -126,8 +121,10 @@ import {
     },
     computed:{
       showGoods(){
+        // console.log(this.currentType);
+        
+        // return this.goods[this.currentType].list
         return this.goods[this.currentType].list
-
       }
     },
     methods:{
@@ -152,18 +149,22 @@ import {
       /* 网络请求相关的方法 */
       getHomeMultidata(){
         getHomeMultidata().then((res) => {
+
           this.banners = res.data.banner.list;
           this.recommends = res.data.recommend.list;
       
         })
       },
-      getHomeGoods(type ){
-        getHomeGoods(type,1).then(res => {
-          this.goods[type].list.push(...res.data.list)
-          this.goods[type] += 1
+      getHomeGoods(type){
+        const page = this.goods[type].page + 1;
+        getHomeGoods(type,page).then((res) => {
+  
+          this.goods[type].list.push(...res.data.list);
+
+          this.goods[type] += 1;
 
         })
-      },
+      }
 
 
 
