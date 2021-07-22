@@ -1,11 +1,13 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
-    <div>
-      <p{{goodsItem.title}}></p>
-      <span class="price">{{goodsItem.price}}</span>
-      <span class="collecr">{{goodsItem.cfav}}</span>
+    
+   <img :src="goodsItem.show.img" alt="">
+   <div class="goods-info">
+      <p>{{goodsItem.title}}</p>
+      <span class="price">¥{{goodsItem.price}}</span>
+      <span class="collecr">评价 {{goodsItem.cfav}}</span>
     </div>
+
   </div>
   
 </template>
@@ -21,6 +23,7 @@
         }
       }
     }
+    
   }
 </script>
 

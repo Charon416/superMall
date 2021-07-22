@@ -8,8 +8,10 @@
         :titles="['流行','新款','精选']" 
         class="tab-control"
         @tabClick="tabClick"></tab-control>
-      <goods-list :goods="showGoods"></goods-list>
-      <ul>
+      <goods-list :goods="goods[currentType].list">{{goods}}</goods-list>
+
+
+      <!-- <ul>
         <li>序号1</li>
         <li>序号2</li>
         <li>序号3</li>
@@ -61,7 +63,9 @@
         <li>序号49</li>
         <li>序号50</li>
 
-      </ul>
+      </ul> -->
+
+
    </div>
 </template>
 
@@ -121,9 +125,7 @@ import {
     },
     computed:{
       showGoods(){
-        // console.log(this.currentType);
         
-        // return this.goods[this.currentType].list
         return this.goods[this.currentType].list
       }
     },
@@ -131,19 +133,18 @@ import {
 
      /* 事件监听相关的 */
       tabClick(index){
+        console.log(index);
         switch (index){
           case 0:
             this.currentType = 'pop'
             break
           case 1:
-            this.currentType = 'news'
+            this.currentType = 'new'
             break
           case 2:
             this.currentType = 'sell'
             break
         }
-        
-
       },
 
       /* 网络请求相关的方法 */
@@ -158,10 +159,15 @@ import {
       getHomeGoods(type){
         const page = this.goods[type].page + 1;
         getHomeGoods(type,page).then((res) => {
-  
-          this.goods[type].list.push(...res.data.list);
 
-          this.goods[type] += 1;
+          console.log(res);
+          // this.$set(this.goods[type].list,res.data.list)
+
+          this.goods[type].list.push(...res.data.list);
+          // console.log(res.data.list);
+
+          this.goods[type].page += 1;
+          console.log(this.goods[type].page);
 
         })
       }
