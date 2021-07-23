@@ -1,17 +1,21 @@
 <template>
    <div id="home">
       <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-      <homeSwiper :banners="banners"></homeSwiper>
-      <recommend-view :recommends="recommends"></recommend-view>
-      <feature-view></feature-view>
-      <tab-control 
-        :titles="['流行','新款','精选']" 
-        class="tab-control"
-        @tabClick="tabClick"></tab-control>
-      <goods-list :goods="goods[currentType].list">{{goods}}</goods-list>
+
+      <scroll class="content">
+        <homeSwiper :banners="banners"></homeSwiper>
+        <recommend-view :recommends="recommends"></recommend-view>
+        <feature-view></feature-view>
+        <tab-control 
+          :titles="['流行','新款','精选']" 
+          class="tab-control"
+          @tabClick="tabClick"></tab-control>
+        <goods-list :goods="showGoods"></goods-list>
+      </scroll>
 
 
-      <!-- <ul>
+
+      <ul>
         <li>序号1</li>
         <li>序号2</li>
         <li>序号3</li>
@@ -63,7 +67,7 @@
         <li>序号49</li>
         <li>序号50</li>
 
-      </ul> -->
+      </ul>
 
 
    </div>
@@ -79,6 +83,7 @@ import GoodsList from "components/content/goods/GoodsList"
 //公共组件
 import NavBar from "components/common/navbar/NavBar"
 import TabControl from "components/content/tabcontrol/TabControl"
+import Scroll from "components/common/scroll/Scroll"
 
 
 
@@ -90,6 +95,7 @@ import {
 
 
 
+
   export default {
     name: "Home",
     components:{
@@ -98,8 +104,8 @@ import {
       FeatureView,
       GoodsList,
       NavBar,
-      TabControl
-    
+      TabControl,
+      Scroll
     },
     data(){
       return {
@@ -167,7 +173,7 @@ import {
           // console.log(res.data.list);
 
           this.goods[type].page += 1;
-          console.log(this.goods[type].page);
+          // console.log(this.goods[type].page);
 
         })
       }
@@ -198,6 +204,11 @@ import {
     top: 44px;
     z-index: 9;
 
+  }
+  .content{
+    /* color: skyblue; */
+    height: 300px;
+    /* overflow: hidden; */
   }
 
 </style>
