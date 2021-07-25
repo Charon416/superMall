@@ -1,73 +1,23 @@
 <template>
-   <div id="home">
-      <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+   <div id="home" class="wrapper">
 
-      <scroll class="content">
-        <homeSwiper :banners="banners"></homeSwiper>
-        <recommend-view :recommends="recommends"></recommend-view>
-        <feature-view></feature-view>
-        <tab-control 
-          :titles="['流行','新款','精选']" 
-          class="tab-control"
-          @tabClick="tabClick"></tab-control>
-        <goods-list :goods="showGoods"></goods-list>
-      </scroll>
+    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
 
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+      <homeSwiper :banners="banners"></homeSwiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control 
+        :titles="['流行','新款','精选']" 
+        class="tab-control"
+        @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
 
-      <ul>
-        <li>序号1</li>
-        <li>序号2</li>
-        <li>序号3</li>
-        <li>序号4</li>
-        <li>序号5</li>
-        <li>序号6</li>
-        <li>序号7</li>
-        <li>序号8</li>
-        <li>序号9</li>
-        <li>序号10</li>
-        <li>序号11</li>
-        <li>序号12</li>
-        <li>序号13</li>
-        <li>序号14</li>
-        <li>序号15</li>
-        <li>序号16</li>
-        <li>序号17</li>
-        <li>序号18</li>
-        <li>序号19</li>
-        <li>序号20</li>
-        <li>序号21</li>
-        <li>序号22</li>
-        <li>序号23</li>
-        <li>序号24</li>
-        <li>序号25</li>
-        <li>序号26</li>
-        <li>序号27</li>
-        <li>序号28</li>
-        <li>序号29</li>
-        <li>序号30</li>
-        <li>序号31</li>
-        <li>序号32</li>
-        <li>序号33</li>
-        <li>序号34</li>
-        <li>序号35</li>
-        <li>序号36</li>
-        <li>序号37</li>
-        <li>序号38</li>
-        <li>序号39</li>
-        <li>序号40</li>
-        <li>序号41</li>
-        <li>序号42</li>
-        <li>序号43</li>
-        <li>序号44</li>
-        <li>序号45</li>
-        <li>序号46</li>
-        <li>序号47</li>
-        <li>序号48</li>
-        <li>序号49</li>
-        <li>序号50</li>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
 
-      </ul>
+
 
 
    </div>
@@ -84,6 +34,7 @@ import GoodsList from "components/content/goods/GoodsList"
 import NavBar from "components/common/navbar/NavBar"
 import TabControl from "components/content/tabcontrol/TabControl"
 import Scroll from "components/common/scroll/Scroll"
+import BackTop from "components/content/backTop/BackTop"
 
 
 
@@ -92,6 +43,8 @@ import {
   getHomeMultidata,
   getHomeGoods
 } from "network/home"
+
+
 
 
 
@@ -105,7 +58,8 @@ import {
       GoodsList,
       NavBar,
       TabControl,
-      Scroll
+      Scroll,
+      BackTop
     },
     data(){
       return {
@@ -116,7 +70,8 @@ import {
           'new':{page:0, list:[]},
           'sell':{page:0, list:[]},
         },
-        currentType:'pop'
+        currentType:'pop',
+        isShowBackTop:'true'
       }
     },
     created(){
@@ -152,6 +107,14 @@ import {
             break
         }
       },
+      backClick(){
+        this.$refs.scroll.scrollTo(0,0)
+
+      },
+      contentScroll(position){
+        this.isShowBackTop = (-position.y) > 1000
+
+      },
 
       /* 网络请求相关的方法 */
       getHomeMultidata(){
@@ -166,7 +129,7 @@ import {
         const page = this.goods[type].page + 1;
         getHomeGoods(type,page).then((res) => {
 
-          console.log(res);
+          // console.log(res);
           // this.$set(this.goods[type].list,res.data.list)
 
           this.goods[type].list.push(...res.data.list);
@@ -180,6 +143,7 @@ import {
 
 
 
+
     }
 
 
@@ -188,7 +152,10 @@ import {
 
 <style scoped>
   #home{
-    padding-top: 44px;
+    /* padding-top: 44px; */
+    height: 100vh;
+    position: relative;
+    
   }
   .home-nav {
     background-color: var(--color-tint);
@@ -205,10 +172,23 @@ import {
     z-index: 9;
 
   }
-  .content{
-    /* color: skyblue; */
-    height: 300px;
-    /* overflow: hidden; */
+
+  /* .content{
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  } */
+
+
+
+  .content {
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+    overflow: hidden;
   }
 
-</style>
+
+</style scoped>
