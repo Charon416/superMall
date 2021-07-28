@@ -4,7 +4,13 @@
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
 
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <scroll 
+        class="content" 
+        ref="scroll" 
+        :probe-type="3" 
+        @scroll="contentScroll" 
+        :pull-up-load="true"
+        @pullingUp="loadMore">
       <homeSwiper :banners="banners"></homeSwiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -115,6 +121,14 @@ import {
         this.isShowBackTop = (-position.y) > 1000
 
       },
+      loadMore(){
+        this.getHomeGoods(this.currentType)
+        //重新计算高度
+        this.$refs.scroll.scroll.refresh()
+        // console.log(this.currentType);
+        // console.log('aaaaaaaaaaaa');
+
+      },
 
       /* 网络请求相关的方法 */
       getHomeMultidata(){
@@ -128,15 +142,11 @@ import {
       getHomeGoods(type){
         const page = this.goods[type].page + 1;
         getHomeGoods(type,page).then((res) => {
-
-          // console.log(res);
-          // this.$set(this.goods[type].list,res.data.list)
-
           this.goods[type].list.push(...res.data.list);
-          // console.log(res.data.list);
-
           this.goods[type].page += 1;
-          // console.log(this.goods[type].page);
+
+
+          this.$refs.scroll.finishPullUp()
 
         })
       }
@@ -191,4 +201,4 @@ import {
   }
 
 
-</style scoped>
+</style>
