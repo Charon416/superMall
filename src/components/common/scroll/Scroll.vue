@@ -54,13 +54,18 @@
     },
     methods:{
       scrollTo(x,y,time=300){
-        this.scroll.scrollTo(x,y,time)
+        this.scroll && this.scroll.scrollTo(x,y,time)
       },
       // 完成加载更多
       finishPullUp(){
         
-        this.scroll.finishPullUp()
-      }
+        this.scroll && this.scroll.finishPullUp()
+      },
+
+      // refresh(){
+      //   this.scroll.refresh()
+
+      // }
     }
 
   }

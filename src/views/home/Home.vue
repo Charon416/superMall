@@ -90,6 +90,13 @@ import {
       this.getHomeGoods('sell')
 
     },
+    mounted(){
+            // 监听图片加载完成
+      // this.$bus.$on('itemImageLoad',() => {
+      //   console.log('---------');
+      //   this.$refs.scroll.refresh()
+      // })
+    },
     computed:{
       showGoods(){
         
