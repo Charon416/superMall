@@ -88,9 +88,10 @@ import {debounce} from "common/utils.js"
           'sell':{page:0, list:[]},
         },
         currentType:'pop',
-        isShowBackTop:'true',
-        tabOffsetTop:'0',
-        isTabFixed:'false'
+        isShowBackTop:true,
+        tabOffsetTop:0,
+        isTabFixed:false,
+        saveY:0
       }
     },
     created(){
@@ -117,6 +118,15 @@ import {debounce} from "common/utils.js"
     computed:{
       showGoods(){
         return this.goods[this.currentType].list
+      },
+      activated(){
+        // console.log('activated');
+        this.$refs.scroll.scrollTo(0,this,saveY,0)
+        this.$refs.scroll.refresh()
+      },
+      deactivated(){
+        // console.log('deactivated');
+        this.saveY=this.$refs.scroll.getScrollY()
       }
     },
     methods:{

@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     
    <!-- <img :src="goodsItem.show.img" alt="" @load="imageLoad"> -->
    <img :src="goodsItem.show.img" alt="">
@@ -25,10 +25,15 @@
       }
     },
     methods:{
-      // imageLoad(){
-      //   this.$bus.$emit('itemImageLoad')
+      imageLoad(){
+        this.$bus.$emit('itemImageLoad')
 
-      // }
+      },
+      itemClick(){
+        // console.log('点击成功');
+        this.$router.push('/detail/' + this.goodsItem.iid)
+        // this.$router.push('/detail')
+      }
     }
     
   }
