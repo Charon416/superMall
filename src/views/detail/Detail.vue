@@ -33,6 +33,7 @@ import {getDetail} from "network/detail"
       //保存传入的iid
       
       this.iid=this.$route.params.iid
+      console.log(this.iid);
 
       //根据iid请求详情数据
       getDetail(this.iid).then(res => {
