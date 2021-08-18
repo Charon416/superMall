@@ -59,6 +59,8 @@ import {
   getHomeGoods
 } from "network/home"
 import {debounce} from "common/utils.js"
+import {itemListenerMixin} from "common/mixin.js"
+
 
 
 
@@ -77,7 +79,10 @@ import {debounce} from "common/utils.js"
       Scroll,
       BackTop,
       debounce
+
     },
+    mixins:[itemListenerMixin],
+    
     data(){
       return {
         banners:[],
@@ -106,10 +111,12 @@ import {debounce} from "common/utils.js"
     },
     mounted(){
       // 监听图片加载完成
-      const refresh = debounce(this.$refs.scroll.refresh,50)
-      this.$bus.$on('itemImageLoad',() => {
-        refresh()
-      })
+      // let newRefresh = debounce(this.$refs.scroll.refresh,100)
+      //对监听的事件进行保存
+      // this.itemImgListener = () => {
+        // newRefresh()
+      // }
+      // this.$bus.$on('itemImageLoad',this.itemImgListener)
 
       // 2,获取tabControl的offersettOP
 
@@ -121,12 +128,15 @@ import {debounce} from "common/utils.js"
       },
       activated(){
         // console.log('activated');
-        this.$refs.scroll.scrollTo(0,this,saveY,0)
+        this.$refs.scroll.scrollTo(0,this.saveY,0)
         this.$refs.scroll.refresh()
       },
       deactivated(){
-        // console.log('deactivated');
+        //保存Y的值
         this.saveY=this.$refs.scroll.getScrollY()
+
+        //取消全局事件监听
+        this.$bus.$off('itemImgLoad',this.itemImgListener)
       }
     },
     methods:{
@@ -163,7 +173,7 @@ import {debounce} from "common/utils.js"
       loadMore(){
         this.getHomeGoods(this.currentType)
         //重新计算高度
-        this.$refs.scroll.scroll.refresh()
+        this.$refs.scroll.refresh()
 
       },
       swiperImageLoad(){
@@ -191,13 +201,7 @@ import {debounce} from "common/utils.js"
 
         })
       }
-
-
-
-
-    }
-
-
+    } 
   }
 </script>
 
