@@ -49,7 +49,7 @@ import GoodsList from "components/content/goods/GoodsList"
 import NavBar from "components/common/navbar/NavBar"
 import TabControl from "components/content/tabcontrol/TabControl"
 import Scroll from "components/common/scroll/Scroll"
-import BackTop from "components/content/backTop/BackTop"
+// import BackTop from "components/content/backTop/BackTop"
 
 
 
@@ -59,7 +59,7 @@ import {
   getHomeGoods
 } from "network/home"
 import {debounce} from "common/utils.js"
-import {itemListenerMixin} from "common/mixin.js"
+import {itemListenerMixin,backTopMixin} from "common/mixin.js"
 
 
 
@@ -77,11 +77,11 @@ import {itemListenerMixin} from "common/mixin.js"
       NavBar,
       TabControl,
       Scroll,
-      BackTop,
+      // BackTop,
       debounce
 
     },
-    mixins:[itemListenerMixin],
+    mixins:[itemListenerMixin,backTopMixin],
     
     data(){
       return {
@@ -93,7 +93,7 @@ import {itemListenerMixin} from "common/mixin.js"
           'sell':{page:0, list:[]},
         },
         currentType:'pop',
-        isShowBackTop:true,
+        // isShowBackTop:true,
         tabOffsetTop:0,
         isTabFixed:false,
         saveY:0
@@ -111,12 +111,12 @@ import {itemListenerMixin} from "common/mixin.js"
     },
     mounted(){
       // 监听图片加载完成
-      // let newRefresh = debounce(this.$refs.scroll.refresh,100)
+      let newRefresh = debounce(this.$refs.scroll.refresh,100)
       //对监听的事件进行保存
-      // this.itemImgListener = () => {
-        // newRefresh()
-      // }
-      // this.$bus.$on('itemImageLoad',this.itemImgListener)
+      this.itemImgListener = () => {
+        newRefresh()
+      }
+      this.$bus.$on('itemImageLoad',this.itemImgListener)
 
       // 2,获取tabControl的offersettOP
 
@@ -126,23 +126,28 @@ import {itemListenerMixin} from "common/mixin.js"
       showGoods(){
         return this.goods[this.currentType].list
       },
-      activated(){
-        // console.log('activated');
-        this.$refs.scroll.scrollTo(0,this.saveY,0)
-        this.$refs.scroll.refresh()
-      },
-      deactivated(){
-        //保存Y的值
-        this.saveY=this.$refs.scroll.getScrollY()
-
-        //取消全局事件监听
-        this.$bus.$off('itemImgLoad',this.itemImgListener)
-      }
     },
+    //进入
+    activated(){
+      
+      this.$refs.scroll.scrollTo(0,this.saveY)
+      this.$refs.scroll.refresh()
+ 
+
+    },
+    //离开
+    deactivated(){
+      //保存Y的值
+      this.saveY = this.$refs.scroll.getScrollY()
+      //取消全局事件监听
+      this.$bus.$off('itemImgLoad',this.itemImgListener)
+
+    },
+    
     methods:{
      /* 事件监听相关的 */
       tabClick(index){
-        console.log(this.tabOffsetTop);
+        // console.log(this.tabOffsetTop);
         switch (index){
           case 0:
             this.currentType = 'pop'
@@ -157,10 +162,10 @@ import {itemListenerMixin} from "common/mixin.js"
         this.$refs.tabControl1.currentIndex = index
         this.$refs.tabControl.currentIndex = index
       },
-      backClick(){
-        this.$refs.scroll.scrollTo(0,0)
+      // backClick(){
+      //   this.$refs.scroll.scrollTo(0,0)
 
-      },
+      // },
       contentScroll(position){
         //判断返回顶部是否显示
         this.isShowBackTop = (-position.y) > 1000
