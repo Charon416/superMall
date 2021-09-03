@@ -13,7 +13,7 @@
       合计：￥{{totalPrice}}
     </div>
 
-    <div class="calculate">
+    <div class="calculate" @click="calcClick">
       结算({{checkLength}})
     </div>
     
@@ -58,6 +58,11 @@
 
         }
         // this.$store.state.cartList.forEach(item => item.checked = !this.isSelectAll)还是有问题的
+      },
+      calcClick(){
+        if(!this.isSelectAll){
+          this.$toast.show('请选择购买的商品',2000)
+        }
       }
     }
 

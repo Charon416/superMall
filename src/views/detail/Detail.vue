@@ -6,11 +6,6 @@
             ref="scroll"
             :probe-type="3"
             @scroll="contentScroll">
-
-
-      <div>{{$store.state.cartList.length}}</div>
-
-
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -23,6 +18,8 @@
     </scroll>
     <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+
+    <!-- <toast :message="message" :show="show"></toast> -->
 
     
   </div>
@@ -50,6 +47,10 @@ import {debounce} from "common/utils.js"
 import {itemListenerMixin,backTopMixin} from "common/mixin.js" 
 
 
+// import Toast from "components/common/toast/Toast"
+
+import {mapActions} from 'vuex'
+
 
 
   export default {
@@ -67,6 +68,8 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
         themeTopY:[],
         getThemeTopY:null,
         currentIndex:0,
+        // message:'',
+        // show:false
 
 
       }
@@ -83,6 +86,8 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
       DetailCommentInfo,
       GoodsList,
       DetailBottomBar,
+      // Toast,
+
       // BackTop
 
     },
@@ -157,9 +162,9 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
         this.themeTopY=[];
         
         this.themeTopY.push(0);
-        this.themeTopY.push(this.$refs.params.$el.offsetTop-44);
-        this.themeTopY.push(this.$refs.comment.$el.offsetTop-44);
-        this.themeTopY.push(this.$refs.recommends.$el.offsetTop-44);
+        this.themeTopY.push(this.$refs.params.$el.offsetTop);
+        this.themeTopY.push(this.$refs.comment.$el.offsetTop);
+        this.themeTopY.push(this.$refs.recommends.$el.offsetTop);
         this.themeTopY.push(Number.MAX_VALUE);
 
         console.log(this.themeTopY);
@@ -185,6 +190,7 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
 
     },
     methods:{
+      ...mapActions(['addCart']),
       backClick(){
         this.$refs.scroll.scrollTo(0,0)
       },
@@ -195,8 +201,6 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
         
       },
       titleClick(index){
-        // console.log(index);
-        // console.log(this.themeTopY);
         this.$refs.scroll.scrollTo(0,-this.themeTopY[index],300)
 
       },
@@ -250,15 +254,32 @@ import {itemListenerMixin,backTopMixin} from "common/mixin.js"
         product.desc=this.goods.desc;
         product.iid = this.iid;
         product.price = this.goods.nowPrice;
-        console.log(product);
-        // 2，将商品添加到购物车
-
-        // this.$store.commit('addCart',product)//mulations调用方法
-        this.$store.dispatch('addCart',product)
-        console.log(this.$store.state.cartList);
-
-
+        // console.log(product);
+        // 2，将商品添加到购物车（1，promise 2，mapActions）
         // this.$store.cateList.push(product);
+        // this.$store.commit('addCart',product)//mulations调用方法
+
+
+        this.addCart(product).then(res => {
+          // this.message = res;
+          // this.show = true;
+          // setTimeout(() =>{
+          //   this.show = false;
+          //   this.message = ''
+          // },1500)
+          this.$toast.show(res,1500)
+        })
+
+        // 第一种方法 this.$store.dispatch('addCart',product).then(res => {
+        //   console.log(res);
+        // })
+
+        // 3,添加到购物车成功
+
+
+
+
+
       }
    
 
